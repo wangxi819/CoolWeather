@@ -2,6 +2,8 @@ package cn.saywow.coolweather.util;
 
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -9,6 +11,7 @@ import org.json.JSONObject;
 import cn.saywow.coolweather.db.City;
 import cn.saywow.coolweather.db.County;
 import cn.saywow.coolweather.db.Province;
+import cn.saywow.coolweather.gson.Weather;
 
 /**
  * Created by WORK on 2018/2/23.
@@ -55,6 +58,7 @@ public class Utility {
                     city.setProvinceID(provinceId);
                     city.save();
                 }
+                return true;
             }
             catch (JSONException e)
             {
@@ -91,6 +95,22 @@ public class Utility {
 
         }
         return false;
+    }
+
+    public static Weather handleWeatherResponse (String response)
+    {
+        try
+        {
+            JSONObject jsonObject = new JSONObject(response);
+            JSONArray jsonArray = jsonObject.getJSONArray("HeWeather");
+            String weatherContent = jsonArray.getJSONObject(0).toString();
+            return new Gson().fromJson(weatherContent,Weather.class);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
